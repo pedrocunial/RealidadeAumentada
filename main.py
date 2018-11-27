@@ -7,6 +7,8 @@ parser.add_argument('--image', default='marcadores/mako.png',
                     help='Imagem a ser projetada')
 parser.add_argument('--board', default='marcadores/board_aruco.png',
                     help='Imagem do tabuleiro ArUco')
+parser.add_argument('--save', action='store_true',
+                    help='Salvar foto do experimento')
 
 args = parser.parse_args()
 
@@ -28,6 +30,8 @@ waifu = cv2.resize(waifu.transpose(1, 0, 2), (width, height))
 
 white = np.zeros((height, width, 3), dtype=np.uint8)
 white[::] = 255
+
+c = 0
 
 
 def match_corners(ids, orig_corners=orig_corners, orig_ids=orig_ids):
@@ -55,6 +59,9 @@ while True:
         mask = cv2.bitwise_not(final)
         res = (mask & frame) | curr_waifu
         cv2.imshow('frame', res)
+        if c > 100 and args.save:
+            cv2.imwrite('marcadores/example.png', res)
+            break
     else:
         # Display the resulting frame
         img = cv2.aruco.drawDetectedMarkers(frame, corners)
@@ -62,6 +69,8 @@ while True:
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
+
+    c += 1
 
 # When everything done, release the capture
 cap.release()

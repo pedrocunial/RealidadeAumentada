@@ -12,4 +12,7 @@ O programa (`main.py`) substitui o conteúdo deste tabuleiro por uma imagem esco
 
 Na raíz do repositório existe uma `Pipfile`, a qual contem as dependências do projeto e pode ser utilizada em conjunto com o [pipenv](https://github.com/pypa/pipenv) para lidar com estas dependências.
 
-Isso resolvido, basta executar o arquivo `main.py`. Adicionalmente, o mesmo possui 2 argumentos opcionais de linha de comando, o `--image` que aceita uma imagem para substituir o tabuleiro e o `--board` que aceita a imagem de um tabuleiro a ser definida como o padrão (deve ser identico ao utilizado).
+Isso resolvido, basta executar o arquivo `main.py`. Adicionalmente, o mesmo possui 2 argumentos opcionais de linha de comando, o `--image` que aceita uma imagem para substituir o tabuleiro, o `--board` que aceita a imagem de um tabuleiro a ser definida como o padrão (deve ser identico ao utilizado) e o `--save` é uma flag se o programa deve salvar uma foto do executado (como no exemplo abaixo).
+
+![realidade aumentada](marcadores/example.png)
+Exemplo de resultado esperado
