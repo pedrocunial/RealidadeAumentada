@@ -1,6 +1,14 @@
 import cv2
 import numpy as np
+import argparse
 
+parser = argparse.ArgumentParser(description='Realidade Aumentada')
+parser.add_argument('--image', default='marcadores/mako.png',
+                    help='Imagem a ser projetada')
+parser.add_argument('--board', default='marcadores/board_aruco.png',
+                    help='Imagem do tabuleiro ArUco')
+
+args = parser.parse_args()
 
 cap = cv2.VideoCapture(0)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
@@ -10,12 +18,12 @@ dictionary = cv2.aruco.Dictionary_get(cv2.aruco.DICT_6X6_250)
 _, frame = cap.read()
 orig_shape = (frame.shape[:2])[::-1]
 
-aruco_img = cv2.imread('marcadores/board_aruco.png')
+aruco_img = cv2.imread(args.board)
 aruco_img = cv2.cvtColor(aruco_img, cv2.COLOR_BGR2RGB)
 height, width, _ = aruco_img.shape
 orig_corners, orig_ids, _ = cv2.aruco.detectMarkers(aruco_img, dictionary)
 
-waifu = cv2.imread('marcadores/mako.png')
+waifu = cv2.imread(args.image)
 waifu = cv2.resize(waifu.transpose(1, 0, 2), (width, height))
 
 white = np.zeros((height, width, 3), dtype=np.uint8)
@@ -28,20 +36,6 @@ def match_corners(ids, orig_corners=orig_corners, orig_ids=orig_ids):
         idx, _ = np.where(orig_ids == i[0])
         result.append(orig_corners[idx[0]])
     return np.array(result)
-
-
-def merge(orig, final):
-    height, width = orig.shape
-    res = orig.copy()
-    for i in range(height):
-        for j in range(width):
-            if not final[i, j].all(0):
-                res[i, j] = final[i, j]
-    return res
-
-
-def good_merge(orig, final):
-    return np.clip(final * 255 + orig, 0, 255).astype(np.uint8)
 
 
 while True:
@@ -59,7 +53,6 @@ while True:
         final = cv2.warpPerspective(white, homography, orig_shape)
         curr_waifu = cv2.warpPerspective(waifu, homography, orig_shape)
         mask = cv2.bitwise_not(final)
-        # final = good_merge(img, final)
         res = (mask & frame) | curr_waifu
         cv2.imshow('frame', res)
     else:
